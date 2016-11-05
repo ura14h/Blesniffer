@@ -1,6 +1,6 @@
-# Buetooth LE sniffer (Beta)
+# Bluetooth LE sniffer (Beta)
 
-A Buetooth LE sniffer for CC2540 USB dongle and macOS.
+A Bluetooth LE sniffer for CC2540 USB dongle and macOS.
 
 This project is __incomplete__. The application can not be saved in files in PCAP format yet. :-(
 
