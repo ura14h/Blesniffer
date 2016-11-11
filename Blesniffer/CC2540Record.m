@@ -10,7 +10,7 @@
 
 
 struct CC2540CapturedRecordHeader {
-	uint8  command;		// 0x00 for capture data.
+	uint8  type;		// 0x00 is capture data.
 	uint16 length;		// Hmmm... I don't use this field because its value may be corrupted.
 	uint32 timestamp;
 	uint8 preamble[1];	// BLE preamble?
@@ -38,8 +38,8 @@ static const NSInteger MinimumRecordLength =
 	if (length < 1) {
 		return [[CC2540UnknownRecord alloc] initWithBytes:bytes length:length];
 	}
-	NSInteger recordType = *((uint8 *)bytes);
-	if (length < MinimumRecordLength || recordType != 0x00) {
+	NSInteger type = *((uint8 *)bytes);
+	if (length < MinimumRecordLength || type != 0x00) {
 		return [[CC2540UnknownRecord alloc] initWithBytes:bytes length:length];
 	}
 	
