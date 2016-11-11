@@ -10,6 +10,7 @@
 #import "PcapDumpFile.h"
 #import "CC2540Record.h"
 
+
 @interface PcapDumpFile ()
 
 @property (assign) pcap_t *handle;
@@ -39,7 +40,9 @@
 }
 
 - (BOOL)open:(NSString *)path {
-	pcap_t *handle = pcap_open_dead(DLT_BLUETOOTH_LE_LL, 64);
+	const int maxPacketSize = 4096;
+	
+	pcap_t *handle = pcap_open_dead(DLT_BLUETOOTH_LE_LL, maxPacketSize);
 	if (!handle) {
 		return NO;
 	}
@@ -56,10 +59,14 @@
 }
 
 - (BOOL)write: (CC2540CapturedRecord *)record {
+	const time_t nanoSeconds = 1000000000;
+	const time_t microSeconds = 1000000;
+	const time_t nanoToMicro = nanoSeconds / microSeconds;
+	
 	uint32 length = (uint32)record.packet.length;
 	u_char *bytes = (u_char *)record.packet.bytes;
-	time_t timestampSecondsPart = (time_t)record.timestamp / 1000000000;
-	suseconds_t timestampMicrosecondsPart = (record.timestamp % 1000000000) / 1000;
+	time_t timestampSecondsPart = (time_t)record.timestamp / nanoSeconds;
+	suseconds_t timestampMicrosecondsPart = (record.timestamp % nanoSeconds) / nanoToMicro;
 	struct timeval timestamp;
 	timestamp.tv_sec = timestampSecondsPart;
 	timestamp.tv_usec = timestampMicrosecondsPart;
