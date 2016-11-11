@@ -12,8 +12,8 @@
 		310085551DCB7B1200C896F3 /* UsbDeviceInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 310085541DCB7B1200C896F3 /* UsbDeviceInterface.m */; };
 		3100855B1DCC166600C896F3 /* UsbDevicePipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 3100855A1DCC166600C896F3 /* UsbDevicePipe.m */; };
 		31C344FE1DCB177D00C53E33 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C344FD1DCB177D00C53E33 /* main.m */; };
+		31CE6AA51DD5E67300FCC797 /* CC2540Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CE6AA41DD5E67300FCC797 /* CC2540Record.m */; };
 		31E01E371DD48DE200FD8AC0 /* CC2540.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E01E361DD48DE200FD8AC0 /* CC2540.m */; };
-		31E01E3A1DD4A0D400FD8AC0 /* CC2540Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E01E391DD4A0D400FD8AC0 /* CC2540Record.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,10 +39,10 @@
 		3100855A1DCC166600C896F3 /* UsbDevicePipe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsbDevicePipe.m; sourceTree = "<group>"; };
 		31C344FA1DCB177D00C53E33 /* Blesniffer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Blesniffer; sourceTree = BUILT_PRODUCTS_DIR; };
 		31C344FD1DCB177D00C53E33 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		31CE6AA31DD5E67300FCC797 /* CC2540Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CC2540Record.h; sourceTree = "<group>"; };
+		31CE6AA41DD5E67300FCC797 /* CC2540Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CC2540Record.m; sourceTree = "<group>"; };
 		31E01E351DD48DE200FD8AC0 /* CC2540.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CC2540.h; sourceTree = "<group>"; };
 		31E01E361DD48DE200FD8AC0 /* CC2540.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CC2540.m; sourceTree = "<group>"; };
-		31E01E381DD4A0D400FD8AC0 /* CC2540Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CC2540Record.h; sourceTree = "<group>"; };
-		31E01E391DD4A0D400FD8AC0 /* CC2540Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CC2540Record.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +78,8 @@
 				31C344FD1DCB177D00C53E33 /* main.m */,
 				31E01E351DD48DE200FD8AC0 /* CC2540.h */,
 				31E01E361DD48DE200FD8AC0 /* CC2540.m */,
-				31E01E381DD4A0D400FD8AC0 /* CC2540Record.h */,
-				31E01E391DD4A0D400FD8AC0 /* CC2540Record.m */,
+				31CE6AA31DD5E67300FCC797 /* CC2540Record.h */,
+				31CE6AA41DD5E67300FCC797 /* CC2540Record.m */,
 				3100854D1DCB486800C896F3 /* UsbDeviceManager.h */,
 				3100854E1DCB486800C896F3 /* UsbDeviceManager.m */,
 				310085501DCB559E00C896F3 /* UsbDevice.h */,
@@ -150,7 +150,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31E01E3A1DD4A0D400FD8AC0 /* CC2540Record.m in Sources */,
+				31CE6AA51DD5E67300FCC797 /* CC2540Record.m in Sources */,
 				31E01E371DD48DE200FD8AC0 /* CC2540.m in Sources */,
 				3100855B1DCC166600C896F3 /* UsbDevicePipe.m in Sources */,
 				310085521DCB559E00C896F3 /* UsbDevice.m in Sources */,

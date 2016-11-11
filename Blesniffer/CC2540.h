@@ -11,7 +11,6 @@
 @class UsbDevice;
 @class CC2540Record;
 
-
 @interface CC2540 : NSObject
 
 @property (assign) NSInteger channel;

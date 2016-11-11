@@ -10,9 +10,12 @@
 #import "UsbDeviceManager.h"
 #import "UsbDevice.h"
 #import "CC2540.h"
+#import "CC2540Record.h"
+
 
 static volatile BOOL readingPackets = YES;
 static void sig_handler(int signo);
+
 
 int main(int argc, const char * argv[]) {
 	@autoreleasepool {
@@ -43,9 +46,12 @@ int main(int argc, const char * argv[]) {
 		while (readingPackets) {
 			@autoreleasepool {
 				CC2540Record *record = [cc2540 read];
-				if (record) {
-					NSLog(@"%ld: %@", number, record);
+				if (!record) {
+					break;
 				}
+				if ([record isKindOfClass:[CC2540CapturedRecord class]]) {
+				}
+				NSLog(@"%08ld: %@", number, record);
 			}
 			number++;
 		}

@@ -12,6 +12,7 @@
 #import "CC2540.h"
 #import "CC2540Record.h"
 
+
 @interface CC2540 ()
 
 @property (strong) UsbDevice *device;
@@ -261,36 +262,14 @@
 	return YES;
 }
 
-struct PipeDataHeader {
-	uint8  command;	// 0x00 for capture data.
-	uint16 length;	// Hmmm... I don't use this field because its value may be corrupted.
-	uint32 timestamp;
-} __attribute__((packed));
-
 - (CC2540Record *)read {
 	NSInteger bufferLength = (NSInteger)(self.bulk.maxPacketSize);
 	uint8 buffer[bufferLength];
 	NSInteger readLength = (NSInteger)[self.bulk read:buffer length:bufferLength];
-	if (readLength < sizeof(struct PipeDataHeader)) {
+	if (readLength < 0) {
 		return nil;
 	}
-	
-	struct PipeDataHeader *header = (struct PipeDataHeader *)buffer;
-	NSInteger command = (NSInteger)(header->command);
-	if (command != 0x00) {
-		return nil;
-	}
-	NSInteger length = readLength - 1;
-	NSInteger timestamp = (NSInteger)(header->timestamp);
-	
-	void *packetBytes = buffer + sizeof(struct PipeDataHeader);
-	NSInteger packetLength = length - 4;
-	NSData *packet = [NSData dataWithBytes:packetBytes length:packetLength];
-	
-	CC2540Record *record = [[CC2540Record alloc] init];
-	record.timestamp = (NSTimeInterval)timestamp;
-	record.packet = packet;
-	
+	CC2540Record *record = [CC2540Record cc2540recordWithBytes:buffer length:readLength];
 	return record;
 }
 
