@@ -38,7 +38,6 @@
 		return nil;
 	}
 	
-	_channel = 0x25;
 	_device = device;
 	_interface = nil;
 	_control = nil;
@@ -117,7 +116,11 @@
 	return YES;
 }
 
-- (BOOL)start {
+- (BOOL)start: (NSInteger)channel {
+	if (channel == 0) {
+		channel = 37;
+	}
+
 	{
 		uint8 data[8] = { 0 };
 		IOUSBDevRequest request = {
@@ -182,7 +185,7 @@
 		}
 	}
 	{
-		uint8 data[1] = { (uint8)self.channel };
+		uint8 data[1] = { (uint8)channel };
 		IOUSBDevRequest request = {
 			.bmRequestType	= USBmakebmRequestType(kUSBOut, kUSBVendor, kUSBDevice),
 			.bRequest		= 0xd2,

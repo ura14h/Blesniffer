@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <unistd.h>
 #import "UsbDeviceManager.h"
 #import "UsbDevice.h"
 #import "CC2540.h"
@@ -14,11 +15,36 @@
 #import "PcapDumpFile.h"
 
 
-static volatile BOOL readingPackets = YES;
-static void sig_handler(int signo);
-
+static void showUsageAndExitApplication();
+static void signalHandler(int signal);
+static volatile BOOL readingCC2540CapturedRecord = YES;
 
 int main(int argc, const char * argv[]) {
+
+	int channel = 0;
+	{
+		int optch;
+		extern char *optarg;
+		extern int optind;
+		extern int opterr;
+		while ((optch = getopt(argc, (char **)argv, "c:")) != -1) {
+			switch (optch) {
+				case 'c':
+					channel = atoi(optarg);
+					break;
+				default:
+					showUsageAndExitApplication();
+					break;
+			}
+		}
+	}
+	argc -= optind;
+	argv += optind;
+	if (argc < 1) {
+		showUsageAndExitApplication();
+	}
+	const char *output = argv[0];
+	
 	@autoreleasepool {
 		
 		UsbDeviceManager *manager = [UsbDeviceManager new];
@@ -38,18 +64,18 @@ int main(int argc, const char * argv[]) {
 			return 1;
 		}
 		
+		NSString *filename = [NSString stringWithCString:output encoding:NSUTF8StringEncoding];
 		PcapDumpFile *file = [[PcapDumpFile alloc] init];
-		if (![file open:@"/tmp/cc2540.pcap"]) {
+		if (![file open:filename]) {
 			return 1;
 		}
-		if (![cc2540 start]) {
+		if (![cc2540 start: channel]) {
 			return 1;
 		}
 
-		signal(SIGINT, sig_handler);
-		printf("start to capture.\n");
+		signal(SIGINT, signalHandler);
 		NSUInteger number = 0;
-		while (readingPackets) {
+		while (readingCC2540CapturedRecord) {
 			@autoreleasepool {
 				CC2540Record *record = [cc2540 read];
 				if (!record) {
@@ -57,12 +83,10 @@ int main(int argc, const char * argv[]) {
 				}
 				if ([record isKindOfClass:[CC2540CapturedRecord class]]) {
 					[file write:(CC2540CapturedRecord *)record];
-					printf(".");
 				}
 			}
 			number++;
 		}
-		printf("\nfinish to capture.\n");
 
 		[cc2540 stop];
 		[file close];
@@ -70,9 +94,18 @@ int main(int argc, const char * argv[]) {
 		[manager close];
 		
 	}
-    return 0;
+	
+    exit(0);
 }
 
-void sig_handler(int signo) {
-	readingPackets = NO;
+void showUsageAndExitApplication() {
+	fprintf(stderr, "This is a Bluetooth LE sniffer for CC2540 USB dongle and macOS.\n");
+	fprintf(stderr, "  Usage: Blesniffer [-c channel] output\n");
+	fprintf(stderr, "    Control-C makes exiting packet capturing.\n");
+	fprintf(stderr, "  Copyright (c) 2016 Hiroki Ishiura\n");
+	exit(1);
+}
+
+void signalHandler(int signal) {
+	readingCC2540CapturedRecord = NO;
 }

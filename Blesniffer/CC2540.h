@@ -14,15 +14,13 @@
 
 @interface CC2540 : NSObject
 
-@property (assign) NSInteger channel;
-
 + (NSInteger)vendorId;
 + (NSInteger)productId;
 
 - (CC2540 *)initWithUsbDevice: (UsbDevice *)device;
 - (BOOL)open;
 - (BOOL)close;
-- (BOOL)start;
+- (BOOL)start: (NSInteger)channel;
 - (BOOL)stop;
 - (CC2540Record *)read;
 
