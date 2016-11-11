@@ -11,6 +11,7 @@
 #import "UsbDevice.h"
 #import "CC2540.h"
 #import "CC2540Record.h"
+#import "PcapDumpFile.h"
 
 
 static volatile BOOL readingPackets = YES;
@@ -36,6 +37,11 @@ int main(int argc, const char * argv[]) {
 		if (![cc2540 open]) {
 			return 1;
 		}
+		
+		PcapDumpFile *file = [[PcapDumpFile alloc] init];
+		if (![file open:@"/tmp/cc2540.pcap"]) {
+			return 1;
+		}
 		if (![cc2540 start]) {
 			return 1;
 		}
@@ -50,14 +56,16 @@ int main(int argc, const char * argv[]) {
 					break;
 				}
 				if ([record isKindOfClass:[CC2540CapturedRecord class]]) {
+					[file write:(CC2540CapturedRecord *)record];
+					printf(".");
 				}
-				NSLog(@"%08ld: %@", number, record);
 			}
 			number++;
 		}
-		printf("finish to capture.\n");
+		printf("\nfinish to capture.\n");
 
 		[cc2540 stop];
+		[file close];
 		[cc2540 close];
 		[manager close];
 		

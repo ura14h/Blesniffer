@@ -21,7 +21,7 @@
 
 @interface CC2540CapturedRecord : CC2540Record
 
-@property (assign) NSInteger timestamp;
+@property (assign) NSUInteger timestamp;
 @property (strong) NSData *packet;
 
 @end

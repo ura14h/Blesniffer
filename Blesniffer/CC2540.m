@@ -269,6 +269,7 @@
 	if (readLength < 0) {
 		return nil;
 	}
+	
 	CC2540Record *record = [CC2540Record cc2540recordWithBytes:buffer length:readLength];
 	return record;
 }

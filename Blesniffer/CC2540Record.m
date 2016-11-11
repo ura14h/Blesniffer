@@ -13,7 +13,8 @@ struct CC2540CapturedRecordHeader {
 	uint8  command;		// 0x00 for capture data.
 	uint16 length;		// Hmmm... I don't use this field because its value may be corrupted.
 	uint32 timestamp;
-	uint8 packet[0];
+	uint8 preamble[1];	// BLE preamble?
+	uint8 packet[0];	// BLE address?
 } __attribute__((packed));
 
 struct CC2540CapturedRecordFooter {
@@ -41,6 +42,7 @@ static const NSInteger MinimumRecordLength =
 	if (length < MinimumRecordLength || recordType != 0x00) {
 		return [[CC2540UnknownRecord alloc] initWithBytes:bytes length:length];
 	}
+	
 	return [[CC2540CapturedRecord alloc] initWithBytes:bytes length:length];
 }
 
@@ -73,8 +75,12 @@ static const NSInteger MinimumRecordLength =
 	}
 	
 	struct CC2540CapturedRecordHeader *header = (struct CC2540CapturedRecordHeader *)bytes;
-	_timestamp = (NSInteger)(header->timestamp);
-	_packet = [NSData dataWithBytes:(header->packet) length:(length - MinimumRecordLength)];
+	NSUInteger timestamp = (NSUInteger)(header->timestamp);
+	void *packetAddress = header->packet;
+	NSUInteger packetLength = length - MinimumRecordLength;
+	
+	_timestamp = timestamp;
+	_packet = [NSData dataWithBytes:packetAddress length:packetLength];
 	
 	return self;
 }

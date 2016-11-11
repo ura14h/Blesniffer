@@ -13,6 +13,8 @@
 		3100855B1DCC166600C896F3 /* UsbDevicePipe.m in Sources */ = {isa = PBXBuildFile; fileRef = 3100855A1DCC166600C896F3 /* UsbDevicePipe.m */; };
 		31C344FE1DCB177D00C53E33 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 31C344FD1DCB177D00C53E33 /* main.m */; };
 		31CE6AA51DD5E67300FCC797 /* CC2540Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CE6AA41DD5E67300FCC797 /* CC2540Record.m */; };
+		31CE6AA81DD5FDDC00FCC797 /* PcapDumpFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 31CE6AA71DD5FDDC00FCC797 /* PcapDumpFile.m */; };
+		31CE6AAB1DD5FE6F00FCC797 /* libpcap.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CE6AAA1DD5FE6F00FCC797 /* libpcap.tbd */; };
 		31E01E371DD48DE200FD8AC0 /* CC2540.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E01E361DD48DE200FD8AC0 /* CC2540.m */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,9 @@
 		31C344FD1DCB177D00C53E33 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		31CE6AA31DD5E67300FCC797 /* CC2540Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CC2540Record.h; sourceTree = "<group>"; };
 		31CE6AA41DD5E67300FCC797 /* CC2540Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CC2540Record.m; sourceTree = "<group>"; };
+		31CE6AA61DD5FDDC00FCC797 /* PcapDumpFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PcapDumpFile.h; sourceTree = "<group>"; };
+		31CE6AA71DD5FDDC00FCC797 /* PcapDumpFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PcapDumpFile.m; sourceTree = "<group>"; };
+		31CE6AAA1DD5FE6F00FCC797 /* libpcap.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libpcap.tbd; path = usr/lib/libpcap.tbd; sourceTree = SDKROOT; };
 		31E01E351DD48DE200FD8AC0 /* CC2540.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CC2540.h; sourceTree = "<group>"; };
 		31E01E361DD48DE200FD8AC0 /* CC2540.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CC2540.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31CE6AAB1DD5FE6F00FCC797 /* libpcap.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +67,7 @@
 			children = (
 				31C344FC1DCB177D00C53E33 /* Blesniffer */,
 				31C344FB1DCB177D00C53E33 /* Products */,
+				31CE6AA91DD5FE6F00FCC797 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +83,8 @@
 			isa = PBXGroup;
 			children = (
 				31C344FD1DCB177D00C53E33 /* main.m */,
+				31CE6AA61DD5FDDC00FCC797 /* PcapDumpFile.h */,
+				31CE6AA71DD5FDDC00FCC797 /* PcapDumpFile.m */,
 				31E01E351DD48DE200FD8AC0 /* CC2540.h */,
 				31E01E361DD48DE200FD8AC0 /* CC2540.m */,
 				31CE6AA31DD5E67300FCC797 /* CC2540Record.h */,
@@ -90,6 +99,14 @@
 				3100855A1DCC166600C896F3 /* UsbDevicePipe.m */,
 			);
 			path = Blesniffer;
+			sourceTree = "<group>";
+		};
+		31CE6AA91DD5FE6F00FCC797 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				31CE6AAA1DD5FE6F00FCC797 /* libpcap.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,6 +170,7 @@
 				31CE6AA51DD5E67300FCC797 /* CC2540Record.m in Sources */,
 				31E01E371DD48DE200FD8AC0 /* CC2540.m in Sources */,
 				3100855B1DCC166600C896F3 /* UsbDevicePipe.m in Sources */,
+				31CE6AA81DD5FDDC00FCC797 /* PcapDumpFile.m in Sources */,
 				310085521DCB559E00C896F3 /* UsbDevice.m in Sources */,
 				3100854F1DCB486800C896F3 /* UsbDeviceManager.m in Sources */,
 				310085551DCB7B1200C896F3 /* UsbDeviceInterface.m in Sources */,
