@@ -42,7 +42,7 @@
 - (BOOL)open:(NSString *)path {
 	const int maxPacketSize = 4096;
 	
-	pcap_t *handle = pcap_open_dead(DLT_BLUETOOTH_LE_LL, maxPacketSize);
+	pcap_t *handle = pcap_open_dead(DLT_BLUETOOTH_LE_LL_WITH_PHDR, maxPacketSize);
 	if (!handle) {
 		return NO;
 	}
@@ -60,10 +60,19 @@
 
 - (BOOL)write: (CC2540CapturedRecord *)record {
 	struct pcap_pkthdr header;
-	header.caplen = record.packetLength;
-	header.len = record.packetLength;
+	header.caplen = record.packetLength + 10;
+	header.len = record.packetLength + 10;
 	header.ts = record.packetTimestamp;
-	pcap_dump((u_char *)self.dumper, &header, record.packetBytes);
+	
+	uint8 body[record.packetLength + 10];
+	memset(body, 0x00, 10);
+	body[0] = record.packetChannel;
+	body[1] = record.packetRssi;
+	body[8] = 0x03; // LE Packet is de-whitened, Signal Power field is valid.
+	body[9] = 0x00;
+	memcpy(body + 10, record.packetBytes, record.packetLength);
+	
+	pcap_dump((u_char *)self.dumper, &header, body);
 
 	return YES;
 }

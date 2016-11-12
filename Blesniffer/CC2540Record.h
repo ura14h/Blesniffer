@@ -22,6 +22,9 @@
 @property (assign) struct timeval packetTimestamp;
 @property (assign) uint32 packetLength;
 @property (assign) void *packetBytes;
+@property (assign) int packetRssi;
+@property (assign) int packetChannel;
+@property (assign) int packetStatus;
 
 @end
 
