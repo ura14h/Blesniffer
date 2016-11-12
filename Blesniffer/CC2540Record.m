@@ -113,12 +113,18 @@ const size_t MinimumLength = HeaderLength + FooterLength;
 	int packetChannel = footer->flags & 0x7f;
 	int packetStatus = (footer->flags & 0x80 ? 1 : 0);
 	
+	int packetPduType = 0;
+	if (packetLength > 5) {
+		packetPduType = ((uint8 *)packetBytes)[5] >> 4;
+	}
+	
 	self.packetTimestamp = packetTimestamp;
 	self.packetLength = packetLength;
 	self.packetBytes = packetBytes;
 	self.packetRssi = packetRssi;
 	self.packetChannel = packetChannel;
 	self.packetStatus = packetStatus;
+	self.packetPduType = packetPduType;
 }
 
 @end

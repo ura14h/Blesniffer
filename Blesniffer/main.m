@@ -27,12 +27,13 @@ int main(int argc, const char *argv[]) {
 
 		int channelNumber = 0;
 		int deviceNumber = 0;
+		BOOL verbose = NO;
 		{
 			int optch;
 			extern char *optarg;
 			extern int optind;
 			extern int opterr;
-			while ((optch = getopt(argc, (char **)argv, "c:d:")) != -1) {
+			while ((optch = getopt(argc, (char **)argv, "c:d:v")) != -1) {
 				switch (optch) {
 					case 'c':
 						channelNumber = atoi(optarg);
@@ -43,6 +44,9 @@ int main(int argc, const char *argv[]) {
 						break;
 					case 'd':
 						deviceNumber = atoi(optarg);
+						break;
+					case 'v':
+						verbose = YES;
 						break;
 					default:
 						exit(1);
@@ -89,6 +93,9 @@ int main(int argc, const char *argv[]) {
 		}
 	
 		UsbDevice *device = deviceList[deviceNumber];
+		if (verbose) {
+			printf("device: %s\n", [device.path UTF8String]);
+		}
 		CC2540 *cc2540 = [[CC2540 alloc] initWithUsbDevice:device];
 		if (![cc2540 open]) {
 			fprintf(stderr, "%s: Could not open CC2540 USB dongle.\n", argv0);
@@ -106,20 +113,41 @@ int main(int argc, const char *argv[]) {
 			exit(1);
 		}
 
+		if (verbose) {
+			printf("start to capture.\n");
+		}
 		signal(SIGINT, signalHandler);
 		NSUInteger number = 0;
 		while (readingCC2540CapturedRecord) {
 			@autoreleasepool {
 				CC2540Record *record = [cc2540 read];
 				if (!record) {
-					fprintf(stderr, "%s: Could not read data.\n", argv0);
+					if (readingCC2540CapturedRecord) {
+						fprintf(stderr, "%s: Could not read data.\n", argv0);
+					} else {
+						if (verbose) {
+							printf("\n");
+						}
+					}
 					break;
 				}
 				if ([record isKindOfClass:[CC2540CapturedRecord class]]) {
-					[file write:(CC2540CapturedRecord *)record];
+					CC2540CapturedRecord *capturedRecord = (CC2540CapturedRecord *)record;
+					if (verbose) {
+						if (capturedRecord.packetPduType > 0) {
+							printf("%d", capturedRecord.packetPduType);
+						} else {
+							printf("?");
+						}
+						fflush(stdout);
+					}
+					[file write:capturedRecord];
 				}
 			}
 			number++;
+		}
+		if (verbose) {
+			printf("stop capturing.\n");
 		}
 
 		[cc2540 stop];

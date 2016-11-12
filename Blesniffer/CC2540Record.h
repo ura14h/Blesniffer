@@ -25,6 +25,7 @@
 @property (assign) int packetRssi;
 @property (assign) int packetChannel;
 @property (assign) int packetStatus;
+@property (assign) int packetPduType;
 
 @end
 
