@@ -15,10 +15,23 @@
 #import "PcapDumpFile.h"
 
 
-static volatile BOOL readingCC2540CapturedRecord = YES;
+static volatile BOOL VerboseMode = NO;
+static volatile BOOL ReadingRecord = YES;
+
+static void verbose(const char *format, ...) {
+	if (!VerboseMode) {
+		return;
+	}
+	
+	va_list args;
+	va_start(args, format);
+	vprintf(format, args);
+	va_end(args);
+	fflush(stdout);
+}
 
 static void signalHandler(int signal) {
-	readingCC2540CapturedRecord = NO;
+	ReadingRecord = NO;
 }
 
 int main(int argc, const char *argv[]) {
@@ -27,7 +40,6 @@ int main(int argc, const char *argv[]) {
 
 		int channelNumber = 0;
 		int deviceNumber = 0;
-		BOOL verbose = NO;
 		{
 			int optch;
 			extern char *optarg;
@@ -46,7 +58,7 @@ int main(int argc, const char *argv[]) {
 						deviceNumber = atoi(optarg);
 						break;
 					case 'v':
-						verbose = YES;
+						VerboseMode = YES;
 						break;
 					default:
 						exit(1);
@@ -93,9 +105,7 @@ int main(int argc, const char *argv[]) {
 		}
 	
 		UsbDevice *device = deviceList[deviceNumber];
-		if (verbose) {
-			printf("device: %s\n", [device.path UTF8String]);
-		}
+		verbose("device: %s\n", [device.path UTF8String]);
 		CC2540 *cc2540 = [[CC2540 alloc] initWithUsbDevice:device];
 		if (![cc2540 open]) {
 			fprintf(stderr, "%s: Could not open CC2540 USB dongle.\n", argv0);
@@ -113,42 +123,30 @@ int main(int argc, const char *argv[]) {
 			exit(1);
 		}
 
-		if (verbose) {
-			printf("start to capture.\n");
-		}
+		verbose("start to capture.\n");
 		signal(SIGINT, signalHandler);
 		NSUInteger number = 0;
-		while (readingCC2540CapturedRecord) {
+		while (ReadingRecord) {
 			@autoreleasepool {
 				CC2540Record *record = [cc2540 read];
 				if (!record) {
-					if (readingCC2540CapturedRecord) {
+					if (ReadingRecord) {
 						fprintf(stderr, "%s: Could not read data.\n", argv0);
 					} else {
-						if (verbose) {
-							printf("\n");
-						}
+						verbose("\n");
 					}
 					break;
 				}
 				if ([record isKindOfClass:[CC2540CapturedRecord class]]) {
 					CC2540CapturedRecord *capturedRecord = (CC2540CapturedRecord *)record;
-					if (verbose) {
-						if (capturedRecord.packetPduType > 0) {
-							printf("%d", capturedRecord.packetPduType);
-						} else {
-							printf("?");
-						}
-						fflush(stdout);
-					}
+					verbose("%c", (capturedRecord.packetPduType > 0) ?
+						((char)(capturedRecord.packetPduType) + '0') : '?');
 					[file write:capturedRecord];
 				}
 			}
 			number++;
 		}
-		if (verbose) {
-			printf("stop capturing.\n");
-		}
+		verbose("stop capturing.\n");
 
 		[cc2540 stop];
 		[file close];
