@@ -25,7 +25,7 @@ static void verbose(const char *format, ...) {
 	
 	va_list args;
 	va_start(args, format);
-	vprintf(format, args);
+	vfprintf(stderr, format, args);
 	va_end(args);
 	fflush(stdout);
 }
@@ -79,8 +79,12 @@ int main(int argc, const char *argv[]) {
 			exit(1);
 		}
 		NSString *output = [NSString stringWithCString:argv[0] encoding:NSUTF8StringEncoding];
-		if (![[output lowercaseString] hasSuffix:@".pcap"]) {
-			output = [NSString stringWithFormat:@"%@.pcap", output];
+		if ([output isEqualToString:@"-"]) {
+			verbose("output is stdout.\n");
+		} else {
+			if (![[output lowercaseString] hasSuffix:@".pcap"]) {
+				output = [NSString stringWithFormat:@"%@.pcap", output];
+			}
 		}
 		const char *outputFile = [output UTF8String];
 

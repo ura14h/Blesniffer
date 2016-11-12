@@ -73,12 +73,14 @@
 	memcpy(body + 10, record.packetBytes, record.packetLength);
 	
 	pcap_dump((u_char *)self.dumper, &header, body);
+	pcap_dump_flush(self.dumper);
 
 	return YES;
 }
 
 - (BOOL)close {
 	if (self.dumper) {
+		pcap_dump_flush(self.dumper);
 		pcap_dump_close(self.dumper);
 	}
 	if (self.handle) {
