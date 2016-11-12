@@ -17,35 +17,48 @@
 
 static void showUsageAndExitApplication();
 static void signalHandler(int signal);
+
+static const char *applicationName = nil;
 static volatile BOOL readingCC2540CapturedRecord = YES;
 
-int main(int argc, const char * argv[]) {
-
-	int channel = 0;
-	{
-		int optch;
-		extern char *optarg;
-		extern int optind;
-		extern int opterr;
-		while ((optch = getopt(argc, (char **)argv, "c:")) != -1) {
-			switch (optch) {
-				case 'c':
-					channel = atoi(optarg);
-					break;
-				default:
-					showUsageAndExitApplication();
-					break;
-			}
-		}
-	}
-	argc -= optind;
-	argv += optind;
-	if (argc < 1) {
-		showUsageAndExitApplication();
-	}
-	const char *output = argv[0];
-	
+int main(int argc, const char *argv[]) {
 	@autoreleasepool {
+		NSString *applicationPath = [NSString stringWithCString:argv[0] encoding:NSUTF8StringEncoding];
+		NSString *applicationFile = [applicationPath lastPathComponent];
+		applicationName = [applicationFile UTF8String];
+		
+		int channel = 0;
+		{
+			int optch;
+			extern char *optarg;
+			extern int optind;
+			extern int opterr;
+			while ((optch = getopt(argc, (char **)argv, "c:")) != -1) {
+				switch (optch) {
+					case 'c':
+						channel = atoi(optarg);
+						if (channel < 0 || channel > 39) {
+							showUsageAndExitApplication();
+						}
+						break;
+					default:
+						showUsageAndExitApplication();
+						break;
+				}
+			}
+			argc -= optind;
+			argv += optind;
+		}
+
+		if (argc < 1) {
+			showUsageAndExitApplication();
+		}
+		NSString *output = [NSString stringWithCString:argv[0] encoding:NSUTF8StringEncoding];
+		if (![[output lowercaseString] hasSuffix:@".pcap"]) {
+			output = [NSString stringWithFormat:@"%@.pcap", output];
+		}
+		const char *outputFile = [output UTF8String];
+
 		
 		UsbDeviceManager *manager = [UsbDeviceManager new];
 		if (![manager open]) {
@@ -64,7 +77,7 @@ int main(int argc, const char * argv[]) {
 			return 1;
 		}
 		
-		NSString *filename = [NSString stringWithCString:output encoding:NSUTF8StringEncoding];
+		NSString *filename = [NSString stringWithCString:outputFile encoding:NSUTF8StringEncoding];
 		PcapDumpFile *file = [[PcapDumpFile alloc] init];
 		if (![file open:filename]) {
 			return 1;
@@ -99,10 +112,8 @@ int main(int argc, const char * argv[]) {
 }
 
 void showUsageAndExitApplication() {
-	fprintf(stderr, "This is a Bluetooth LE sniffer for CC2540 USB dongle and macOS.\n");
-	fprintf(stderr, "  Usage: Blesniffer [-c channel] output\n");
-	fprintf(stderr, "    Control-C makes exiting packet capturing.\n");
-	fprintf(stderr, "  Copyright (c) 2016 Hiroki Ishiura\n");
+	fprintf(stderr, "Usage: %s [-c channel] output.pcap\n", applicationName);
+	fprintf(stderr, "  (!) control-c makes exiting packet capturing.\n");
 	exit(1);
 }
 
