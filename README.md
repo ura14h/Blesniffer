@@ -1,8 +1,20 @@
-# Bluetooth LE sniffer (Beta)
+# Bluetooth LE sniffer
 
 A Bluetooth LE sniffer for CC2540 USB dongle and macOS.
 
-This project is __incomplete__. The application can not be saved in files in PCAP format yet. :-(
+## Usage
+
+This is a command line utility.
+
+```
+$ Blesniffer [-c channel#] [-d device#] output.pcap
+```
+
+### Parameters
+
+  * `-c channel#`: RF channel. The channel must be from 0 to 39. This is option parameter.
+  * `output.pcap`: A name of output file which format is PCAP. If you specified '-', the program outputs captured packets to standard out.
+
 
 ## Requirements
 

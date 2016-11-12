@@ -74,7 +74,7 @@ int main(int argc, const char *argv[]) {
 			NSString *applicationFile = [applicationPath lastPathComponent];
 			const char *applicationName = [applicationFile UTF8String];
 			
-			fprintf(stderr, "Usage: %s [-c channel#] [-d device#] output.pcap\n", applicationName);
+			fprintf(stderr, "Usage: %s [-c channel#] [-d device#] [-v] output.pcap\n", applicationName);
 			fprintf(stderr, "  (!) control-c makes exiting packet capturing.\n");
 			exit(1);
 		}
