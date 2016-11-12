@@ -88,7 +88,7 @@ int main(int argc, const char *argv[]) {
 			exit(1);
 		}
 	
-		UsbDevice *device = deviceList[0];
+		UsbDevice *device = deviceList[deviceNumber];
 		CC2540 *cc2540 = [[CC2540 alloc] initWithUsbDevice:device];
 		if (![cc2540 open]) {
 			fprintf(stderr, "%s: Could not open CC2540 USB dongle.\n", argv0);
