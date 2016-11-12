@@ -14,6 +14,7 @@
 #import "CC2540Record.h"
 #import "PcapDumpFile.h"
 
+static volatile const char *ApplicationVersion __attribute__((unused)) = "1.0.0";
 
 static volatile BOOL VerboseMode = NO;
 static volatile BOOL ReadingRecord = YES;
