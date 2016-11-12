@@ -266,9 +266,9 @@
 }
 
 - (CC2540Record *)read {
-	NSInteger bufferLength = (NSInteger)(self.bulk.maxPacketSize);
+	NSInteger bufferLength = self.bulk.maxPacketSize;
 	uint8 buffer[bufferLength];
-	NSInteger readLength = (NSInteger)[self.bulk read:buffer length:bufferLength];
+	NSInteger readLength = [self.bulk read:buffer length:bufferLength];
 	if (readLength < 0) {
 		return nil;
 	}

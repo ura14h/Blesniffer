@@ -22,9 +22,10 @@ struct CC2540CapturedRecordFooter {
 	uint8 fsc2;			// it contains that this frame is valid or invalid ?
 } __attribute__((packed));
 
-static const NSInteger MinimumRecordLength =
+static const size_t MinimumRecordLength =
 	sizeof(struct CC2540CapturedRecordHeader) + sizeof(struct CC2540CapturedRecordFooter);
 
+// MARK: -
 
 @interface CC2540Record ()
 
@@ -38,6 +39,7 @@ static const NSInteger MinimumRecordLength =
 	if (length < 1) {
 		return [[CC2540UnknownRecord alloc] initWithBytes:bytes length:length];
 	}
+	
 	NSInteger type = *((uint8 *)bytes);
 	if (length < MinimumRecordLength || type != 0x00) {
 		return [[CC2540UnknownRecord alloc] initWithBytes:bytes length:length];
@@ -52,19 +54,12 @@ static const NSInteger MinimumRecordLength =
 		return nil;
 	}
 	
-	_type = *((uint8 *)bytes);
-	_length = length;
-	
 	return self;
-}
-
-- (NSString *)description {
-	NSString *description = [NSString stringWithFormat:@"<%@: %p> type=%ld, length=%ld", [self class], self, self.type, self.length];
-	return description;
 }
 
 @end
 
+// MARK: -
 
 @implementation CC2540CapturedRecord
 
@@ -73,20 +68,41 @@ static const NSInteger MinimumRecordLength =
 	if (!self) {
 		return nil;
 	}
-	
-	struct CC2540CapturedRecordHeader *header = (struct CC2540CapturedRecordHeader *)bytes;
-	NSUInteger timestamp = (NSUInteger)(header->timestamp);
-	void *packetAddress = header->packet;
-	NSUInteger packetLength = length - MinimumRecordLength;
-	
-	_timestamp = timestamp;
-	_packet = [NSData dataWithBytes:packetAddress length:packetLength];
+
+	[self parseBytes:bytes length:length];
 	
 	return self;
 }
 
+- (void)dealloc {
+	if (self.packetBytes) {
+		free(self.packetBytes);
+		self.packetBytes = nil;
+	}
+}
+
+- (void)parseBytes: (void *)bytes length:(NSInteger)length {
+	struct CC2540CapturedRecordHeader *header = (struct CC2540CapturedRecordHeader *)bytes;
+	
+	const time_t nanoSeconds = 1000000000;
+	const time_t microSeconds = 1000000;
+	const time_t nanoToMicro = nanoSeconds / microSeconds;
+	struct timeval packetTimestamp;
+	packetTimestamp.tv_sec = (time_t)header->timestamp / nanoSeconds;
+	packetTimestamp.tv_usec = (header->timestamp % nanoSeconds) / nanoToMicro;
+	
+	uint32 packetLength = (uint32)((size_t)length - MinimumRecordLength);
+	void *packetBytes = malloc(packetLength);
+	memcpy(packetBytes, header->packet, packetLength);
+
+	self.packetTimestamp = packetTimestamp;
+	self.packetLength = packetLength;
+	self.packetBytes = packetBytes;
+}
+
 @end
 
+// MARK: -
 
 @implementation CC2540UnknownRecord
 

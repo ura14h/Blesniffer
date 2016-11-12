@@ -11,21 +11,21 @@
 
 @interface CC2540Record : NSObject
 
-@property (assign) NSInteger type;
-@property (assign) NSInteger length;
-
 + (instancetype)cc2540recordWithBytes:(void *)bytes length:(NSInteger)length;
 
 @end
 
+// MARK: -
 
 @interface CC2540CapturedRecord : CC2540Record
 
-@property (assign) NSUInteger timestamp;
-@property (strong) NSData *packet;
+@property (assign) struct timeval packetTimestamp;
+@property (assign) uint32 packetLength;
+@property (assign) void *packetBytes;
 
 @end
 
+// MARK: -
 
 @interface CC2540UnknownRecord : CC2540Record
 
