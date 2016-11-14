@@ -14,6 +14,8 @@ This is a command line utility.
 $ Blesniffer [-c channel#] [-d device#] [-v] output.pcap
 ```
 
+Press Control + C to stop capturing packets.
+
 ### Parameters
 
   * `-c channel#`: RF channel. The channel must be from 0 to 39. One of 37, 38 or 39 is recommended. This is option parameter. The default channel is 37.
