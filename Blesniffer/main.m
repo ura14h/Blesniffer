@@ -28,7 +28,7 @@ static void verbose(const char *format, ...) {
 	va_start(args, format);
 	vfprintf(stderr, format, args);
 	va_end(args);
-	fflush(stdout);
+	fflush(stderr);
 }
 
 static void signalHandler(int signal) {
