@@ -1,6 +1,6 @@
 # Bluetooth LE sniffer
 
-A Bluetooth LE sniffer for CC2540 USB dongle and macOS.
+A Bluetooth LE sniffer for CC2540 USB dongle and Mac.
 
 ![CC2540 USB dongle](README.jpg)
 
